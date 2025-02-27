@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalização</title>
+  <script>
+    let imagemCarregada = false;
+    let personagem = new Image();
+    personagem.width = 600;
+    let imagemFundo = new Image();
+
+    function trocarImagem(src) {
+      imagemFundo.src = src;
+      imagemFundo.onload = function () {
+        imagemCarregada = true;
+        desenharCanvas();
+      };
+    }
+
+    function selecionarPersonagem(src) {
+      personagem.src = src;
+      personagem.width = 300
+      personagem.onload = function () {
+        if (imagemCarregada) {
+          desenharCanvas();
+        }
+      }
+    }
+
+    function desenharCanvas() {
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(imagemFundo, 0, 0, canvas.width, canvas.height);
+      if (personagem.src) {
+        ctx.drawImage(personagem, canvas.width / 2 - 100, canvas.height - 600, 200, 200);
+      }
+      escreverTexto();
+    }
+
+    function escreverTexto() {
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const texto = document.getElementById("texto").value;
+      if (imagemCarregada) {
+        ctx.font = "bold 40px Arial";
+        ctx.fillStyle = "#ff4500";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillText(texto, canvas.width / 2, canvas.height - 300);
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-700 to-orange-500 min-h-screen flex flex-col md:flex-row items-center justify-center p-4">
+<div class="w-full max-w-6xl bg-white rounded-lg shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-3">
+  <div class="opcoes p-6 bg-gradient-to-r from-purple-700 to-orange-500 text-white">
+    <h2 class="text-2xl font-bold mb-4">Escolha a toalha</h2>
+    <div class="space-y-2">
+      <button class="w-full p-3 bg-white text-purple-700 rounded-lg shadow-md hover:bg-purple-200" onclick="trocarImagem('MASCULINA.jpg')">Toalha Masculina</button>
+      <button class="w-full p-3 bg-white text-purple-700 rounded-lg shadow-md hover:bg-purple-200" onclick="trocarImagem('FEMININA.jpg')">Toalha Feminina</button>
+    </div>
+
+    <h2 class="text-2xl font-bold mt-6">Escolha o personagem</h2>
+    <div class="space-y-2">
+      <button class="w-full p-3 bg-white text-purple-700 rounded-lg shadow-md hover:bg-purple-200" onclick="selecionarPersonagem('stitch.png')">Stitch</button>
+      <button class="w-full p-3 bg-white text-purple-700 rounded-lg shadow-md hover:bg-purple-200" onclick="selecionarPersonagem('angel.png')">Angel</button>
+    </div>
+
+    <h2 class="text-2xl font-bold mt-6">Escreva o nome</h2>
+    <input type="text" id="texto" placeholder="Digite o nome" oninput="desenharCanvas()" class="w-full p-3 rounded-lg text-black shadow-md focus:ring-2 focus:ring-orange-400 mt-2">
+  </div>
+
+  <div class="preview col-span-2 flex items-center justify-center bg-gray-200 p-6">
+    <canvas id="canvas" width="600" height="800" class="border-8 border-purple-700 rounded-xl shadow-lg"></canvas>
+  </div>
+</div>
+</body>
+</html>
